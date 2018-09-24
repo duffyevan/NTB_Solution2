@@ -15,6 +15,8 @@ class EmailGetter:
         self.username = username
         self.password = password
         self.threads = max_workers
+        if not os.path.exists(download_path):
+            os.makedirs(download_path)
 
     def _login(self, username, password):
         self.client.login(username, password)

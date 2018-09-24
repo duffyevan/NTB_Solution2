@@ -1,5 +1,6 @@
 import email
 import os
+import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
 from imaplib import IMAP4_SSL
 
@@ -33,10 +34,14 @@ class EmailGetter:
             pool.submit(self.threaded_download, msg_number)
 
     def threaded_download(self, message_number):
-        client1 = EmailGetter(self.hostname, self.username, self.password)
+        try:
+            client1 = EmailGetter(self.hostname, self.username, self.password)
 
-        ret, msg = client1.client.fetch(str(message_number), "(RFC822)")
-        EmailGetter.download_attachment_from_email(email.message_from_bytes(msg[0][1]), download_path=self.download_path)
+            ret, msg = client1.client.fetch(str(message_number), "(RFC822)")
+            EmailGetter.download_attachment_from_email(email.message_from_bytes(msg[0][1]), download_path=self.download_path)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
 
     @staticmethod
     def download_attachment_from_email(message, download_path='./'):

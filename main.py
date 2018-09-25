@@ -7,12 +7,14 @@ from Email import EmailGetter
 
 logging.basicConfig(filename="log.txt", level=logging.INFO, format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")
+login_info = []
 try:
     login_info = open("email.csv", 'r').readline().strip().split(',')
 except:
     print("Failed To Read email.csv!")
     logging.fatal("Failed To Read email.csv, this file must exist and contain host, user, and password for the email "
                   "client.")
+    sys.exit(-1)
 
 download_path = sys.argv[1] if len(sys.argv) > 1 else './downloads/'
 

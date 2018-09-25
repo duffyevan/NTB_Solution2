@@ -4,7 +4,7 @@ from datetime import date
 
 from Email import EmailGetter
 
-login_info = open("email.csv", 'r').readline().split(',')
+login_info = open("email.csv", 'r').readline().strip().split(',')
 
 download_path = sys.argv[1] if len(sys.argv) > 1 else './downloads/'
 

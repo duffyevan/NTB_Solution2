@@ -66,11 +66,10 @@ class EmailGetter:
             filename = part.get_filename()
             att_path = os.path.join(download_path, filename)
 
-            if not os.path.isfile(att_path):
-                fp = open(att_path, 'wb')
-                logging.info("Writing to " + att_path)
-                fp.write(part.get_payload(decode=True))
-                fp.close()
+            fp = open(att_path, 'wb')
+            logging.info("Writing to " + att_path)
+            fp.write(part.get_payload(decode=True))
+            fp.close()
 
 # ######## THREAD POOL ##########
 # pool = ThreadPoolExecutor(max_workers=8)

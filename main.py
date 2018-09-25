@@ -1,9 +1,11 @@
 import logging
 import multiprocessing
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 from Email import EmailGetter
+
+lookback_days = 31
 
 logging.basicConfig(filename="log.txt", level=logging.INFO, format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")
@@ -24,6 +26,8 @@ client = EmailGetter(login_info[0], login_info[1], login_info[2],
                      max_workers=multiprocessing.cpu_count() / 2, download_path=download_path)
 logging.info("Logged into the email server")
 
-client.download_all_attachments_since_date(date(2016, 5, 5))
+download_since_date = date.today() - timedelta(lookback_days)  # download since today minus 31 days
+
+client.download_all_attachments_since_date(download_since_date)
 
 logging.info("Done. Exiting")

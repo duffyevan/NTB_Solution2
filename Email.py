@@ -39,6 +39,8 @@ class EmailGetter:
         for msg_number in messages:
             pool.submit(self.threaded_download, msg_number)
 
+        pool.shutdown(wait=True)  # join
+
     def threaded_download(self, message_number):
         try:
             logging.info("Starting thread for message " + str(message_number))

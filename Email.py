@@ -1,4 +1,5 @@
 import email
+import logging
 import os
 import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -28,6 +29,11 @@ class EmailGetter:
 
     def download_all_attachments_since_date(self, date):
         messages = self.get_email_list_since_date(date)
+        if len(messages) > 0:
+            logging.info("Need to download messages: " + str(messages))
+        else:
+            logging.warning("Don't need to download any messages...")
+
         pool = ThreadPoolExecutor(max_workers=self.threads)
 
         for msg_number in messages:
@@ -35,12 +41,16 @@ class EmailGetter:
 
     def threaded_download(self, message_number):
         try:
+            logging.info("Starting thread for message " + str(message_number))
             client1 = EmailGetter(self.hostname, self.username, self.password)
 
+            logging.info("Getting message " + str(message_number))
             ret, msg = client1.client.fetch(str(message_number), "(RFC822)")
-            EmailGetter.download_attachment_from_email(email.message_from_bytes(msg[0][1]), download_path=self.download_path)
+            EmailGetter.download_attachment_from_email(email.message_from_bytes(msg[0][1]),
+                                                       download_path=self.download_path)
         except Exception as e:
-            print(e)
+            print(str(e))
+            logging.error(str(e))
             traceback.print_exc()
 
     @staticmethod
@@ -56,10 +66,9 @@ class EmailGetter:
 
             if not os.path.isfile(att_path):
                 fp = open(att_path, 'wb')
-                print("Writing to " + att_path)
+                logging.info("Writing to " + att_path)
                 fp.write(part.get_payload(decode=True))
                 fp.close()
-
 
 # ######## THREAD POOL ##########
 # pool = ThreadPoolExecutor(max_workers=8)

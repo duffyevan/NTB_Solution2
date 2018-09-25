@@ -2,3 +2,4 @@
 email.csv
 __pycache__/
 *.pyc
+log.txt

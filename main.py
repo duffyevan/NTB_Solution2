@@ -7,7 +7,7 @@ from datetime import date, timedelta
 
 from Email import EmailGetter
 
-lookback_days = 31
+lookback_days = 7
 
 logging.basicConfig(filename="log.txt", level=logging.INFO, format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")

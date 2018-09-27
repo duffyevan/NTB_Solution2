@@ -45,8 +45,9 @@ client.download_all_attachments_since_date(download_since_date)
 combined_files = os.listdir(download_path)
 
 new_files = list(set(combined_files) - set(old_files))
-print("Got New Files: " + str(new_files))
-logging.info("Got New Files: " + str(new_files))
+if len(new_files) > 0:
+    print("Got New Files: " + str(new_files))
+    logging.info("Got New Files: " + str(new_files))
 
 for file in new_files:
     src = os.path.join(download_path, file)

@@ -32,7 +32,7 @@ class EmailGetter:
         if len(messages) > 0:
             logging.info("Need to download messages: " + str(messages))
         else:
-            logging.warning("Don't need to download any messages...")
+            logging.warning("No New Emails Found")
 
         pool = ThreadPoolExecutor(max_workers=self.threads)
 

@@ -6,6 +6,7 @@ from shutil import copyfile
 from datetime import date, timedelta
 
 from Email import EmailGetter
+from NTBCloud import NTBWebdav
 
 lookback_days = 7  # The number of days to download email before today
 
@@ -13,17 +14,20 @@ lookback_days = 7  # The number of days to download email before today
 logging.basicConfig(filename="log.txt", level=logging.INFO, format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")
 
-# Attempt to read email login info from email.csv
+# Attempt to read email login info from login.csv
 login_info = []
 try:
-    login_info = open("email.csv", 'r').readline().strip().split(',')
+    login_file = open("login.csv", 'r')
+    login_info = login_file.readline().strip().split(',')
+    ntb_login_info = login_file.readline().strip().split(',')
 except:
-    print("Failed To Read email.csv!")
-    logging.fatal("Failed To Read email.csv, this file must exist and contain host, user, and password for the email "
+    print("Failed To Read login.csv!")
+    logging.fatal("Failed To Read login.csv, this file must exist and contain host, user, and password for the email "
                   "client.")
     sys.exit(-1)  # close the program with an error code
 
 # if we havent specified the destination path in the command, exit with code and print usage
+# ex: python3 main.py /home/wpfeldme/www/auto.wp-feldmessung.ch/file_content/new
 if len(sys.argv) < 2:
     print("Usage: python3 main.py <download destination path>")
     exit(-1)
@@ -63,10 +67,12 @@ if len(new_files) > 0:
     print("Got New Files: " + str(new_files))
     logging.info("Got New Files: " + str(new_files))
 
+ntb_client = NTBWebdav(ntb_login_info[0],ntb_login_info[1],ntb_login_info[2])
 # for each new file copy it from the temp download folder to the final destination folder
 for file in new_files:
     src = os.path.join(download_path, file)
     dest = os.path.join(destination_path, file)
+    ntb_client.backup_file(dest) # make a backup to NTB's cloud
     copyfile(src, dest)
 
 logging.info("Done. Exiting")

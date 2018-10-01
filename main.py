@@ -2,11 +2,11 @@ import logging
 import multiprocessing
 import os
 import sys
-from shutil import copyfile
 from datetime import date, timedelta
+from shutil import copyfile
 
 from Email import EmailGetter
-from NTBCloud import NTBWebdav
+from NTBCloud import NTBWebdav, NTBCloudException
 
 lookback_days = 7  # The number of days to download email before today
 
@@ -67,12 +67,19 @@ if len(new_files) > 0:
     print("Got New Files: " + str(new_files))
     logging.info("Got New Files: " + str(new_files))
 
-ntb_client = NTBWebdav(ntb_login_info[0],ntb_login_info[1],ntb_login_info[2])
+ntb_client = NTBWebdav(ntb_login_info[0], ntb_login_info[1], ntb_login_info[2])
 # for each new file copy it from the temp download folder to the final destination folder
 for file in new_files:
     src = os.path.join(download_path, file)
     dest = os.path.join(destination_path, file)
-    ntb_client.backup_file(dest) # make a backup to NTB's cloud
+
+    try:
+        ntb_client.backup_file(dest)  # make a backup to NTB's cloud
+    except NTBCloudException as ex:
+        logging.error("Failed to backup " + file + " to NTB's Cloud!")
+        logging.error("Webdav Error Info: " + str(ex))
+        print("Failed to backup " + file + " to NTB's Cloud!")
+
     copyfile(src, dest)
 
 logging.info("Done. Exiting")

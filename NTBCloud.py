@@ -1,3 +1,4 @@
+import logging
 import os
 
 import webdav.client as wc
@@ -20,8 +21,10 @@ class NTBWebdav:
         }
         self.backup_location = "/remote.php/webdav/09_SHARED_FOLDER_EXTERN/"
         self.client = wc.Client(login_options)
+        logging.info("Logged Into NTB Webdav")
 
     def backup_file(self, file_path):
+        logging.info("Backing up " + file_path)
         backup_file_name = os.path.join(self.backup_location, os.path.basename(file_path))
         try:
             self.client.upload_sync(local_path=file_path, remote_path=backup_file_name)

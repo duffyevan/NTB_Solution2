@@ -91,6 +91,7 @@ except IndexError:
 for file in new_files:
     src = os.path.join(download_path, file)
     dest = os.path.join(destination_path, file)
+    copyfile(src, dest)
 
     try:
         ntb_client.backup_file(dest)  # make a backup to NTB's cloud
@@ -98,7 +99,5 @@ for file in new_files:
         logging.error("Failed to backup " + file + " to NTB's Cloud!")
         logging.error("Webdav Error Info: " + str(ex))
         print("Failed to backup " + file + " to NTB's Cloud!")
-
-    copyfile(src, dest)
 
 logging.info("Done. Exiting")

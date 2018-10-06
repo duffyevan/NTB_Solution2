@@ -5,6 +5,7 @@ import sys
 from datetime import date, timedelta
 from shutil import copyfile
 
+from ConsistencyChecker import ConsistencyChecker
 from Email import EmailGetter
 from NTBCloud import NTBWebdav, NTBCloudException
 
@@ -99,5 +100,8 @@ for file in new_files:
         logging.error("Failed to backup " + file + " to NTB's Cloud!")
         logging.error("Webdav Error Info: " + str(ex))
         print("Failed to backup " + file + " to NTB's Cloud!")
+
+checker = ConsistencyChecker()
+checker.check_consistency(download_path)
 
 logging.info("Done. Exiting")

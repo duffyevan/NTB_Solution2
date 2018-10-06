@@ -101,7 +101,13 @@ for file in new_files:
         logging.error("Webdav Error Info: " + str(ex))
         print("Failed to backup " + file + " to NTB's Cloud!")
 
-checker = ConsistencyChecker()
-checker.check_consistency(download_path)
+try:
+    checker = ConsistencyChecker()
+    checker.check_consistency(download_path)
+
+except:
+    logging.error("Failed To Check Consistency Of PLC Emails! Make sure all credentials are in order and there have "
+                  "been no changes to file structure")
+    print("Failed To Check Consistency Of PLC Emails")
 
 logging.info("Done. Exiting")

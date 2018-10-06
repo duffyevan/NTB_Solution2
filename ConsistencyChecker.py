@@ -9,7 +9,7 @@ class ConsistencyChecker:
         login_info = open('login.csv').readlines()[2].strip().split(',')
         self.email_login = login_info
         self.email_client = EMailSender(login_info[0], login_info[1])
-        self.email_client.login(login_info[2],login_info[3])
+        self.email_client.login(login_info[2], login_info[3])
 
     def check_consistency(self, directory):
         yesterdays_list = self.get_plcs_for_day(date.today() - timedelta(days=1), directory)
@@ -22,11 +22,10 @@ class ConsistencyChecker:
             print("PLC MISSING!!!")
             print("Missing PLCS: " + str(missing_plcs))
             for plc in missing_plcs:
-                email = EMail(self.email_login[2], self.email_login[2]) # TODO set destination email to a target
+                email = EMail(self.email_login[2], self.email_login[2])  # TODO set destination email to a target
                 email.set_body("SPS Number " + str(plc) + " Did Not Send An Email Today!!")
                 email.set_subject("SPS #" + str(plc) + " Missing")
                 self.email_client.send_message(email)
-
 
     def get_plcs_for_day(self, day, directory):
         plc_numbers = set()
@@ -36,14 +35,16 @@ class ConsistencyChecker:
                 plc_numbers.add(data[0])
         return plc_numbers
 
-    def __name_to_plc_and_date(self, filename):
+    @staticmethod
+    def __name_to_plc_and_date(filename):
         if '.xls' not in filename:
             print("Data Not Found For " + filename)
             return None
-        parts = filename.replace('.xls','').split('_')
-        number = int(parts[0].replace('F',''))
+        parts = filename.replace('.xls', '').split('_')
+        number = int(parts[0].replace('F', ''))
         d = datetime.strptime(parts[1], "%Y%m%d").date()
         return number, d
+
 
 if __name__ == '__main__':
     c = ConsistencyChecker()

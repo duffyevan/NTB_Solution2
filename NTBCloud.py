@@ -19,7 +19,7 @@ class NTBWebdav:
             'webdav_login': username,
             'webdav_password': password
         }
-        self.backup_location = "/remote.php/webdav/09_SHARED_FOLDER_EXTERN/backup_files"
+        self.backup_location = "/remote.php/webdav/09_SHARED_FOLDER_EXTERN/Messdaten_Feldmessung"
         self.client = wc.Client(login_options)
         logging.info("Logged Into NTB Webdav")
 

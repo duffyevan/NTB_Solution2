@@ -19,7 +19,7 @@ def expected_login_format():
 lookback_days = 7  # The number of days to download email before today
 
 # Set up the log file and correct formatting
-logging.basicConfig(filename="log.txt", level=logging.INFO, format='%(asctime)s: %(levelname)s : %(message)s')
+logging.basicConfig(filename="~/log_mail.txt", level=logging.INFO, format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")
 
 # Attempt to read email login info from login.csv

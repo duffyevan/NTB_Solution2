@@ -3,6 +3,7 @@ from datetime import date, timedelta, datetime
 
 from EmailSender import EMailSender, EMail
 
+target_address = "matthias.berthold@ntb.ch"
 
 class ConsistencyChecker:
     def __init__(self):
@@ -24,7 +25,7 @@ class ConsistencyChecker:
             print("PLC MISSING!!!")
             print("Missing PLCS: " + str(missing_plcs))
             for plc in missing_plcs:
-                email = EMail(self.email_login[2], self.email_login[2])  # TODO set destination email to a target
+                email = EMail(self.email_login[2], target_address)
                 email.set_body("SPS Number " + str(plc) + " Did Not Send An Email Today!!")
                 email.set_subject("SPS #" + str(plc) + " Missing")
                 self.email_client.send_message(email)

@@ -33,9 +33,9 @@ One quick configuration step is required.
 1. Create a file in the `ntb-mail-downloader` folder called `login.csv`.
 2. Three sets of login credentials are needed in the format as follows
 ```
-<SMTP server to download mail from>,<user email for that server>,<password for that user>
+<IMAP server to download mail from>,<user email for that server>,<password for that user>
 https://cloud.ntb.ch,<your ntb username>,<your ntb password>
-<IMAP server to send alert emails from>,<IMAP port>,<alert email user email>,<alert email user password>
+<SMTP server to send alert emails from>,<SMTP port>,<alert email user email>,<alert email user password>
 ```
 For example:
 ```

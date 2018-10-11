@@ -17,10 +17,10 @@ def expected_login_format():
     print("\twebdavaddress,ntbusername,ntbpassword")
 
 
-lookback_days = 0  # The number of days to download email before today
+lookback_days = 7  # The number of days to download email before today
 
 # Set up the log file and correct formatting
-logging.basicConfig(filename="log_mail.txt",
+logging.basicConfig(filename="/home/wpfeldme/log_mail.txt",
                     level=logging.INFO,
                     format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")
@@ -100,7 +100,7 @@ with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()/2) as executor:
         copyfile(src, dest)
 
         try:
-            executor.submit(ntb_client.backup_file, dest)
+            executor.submit(ntb_client.backup_file, dest, ntb_client.getPathFromFileName(os.path.split(dest)[1]))
             # make a backup to NTB's cloud
         except NTBCloudException as ex:
             logging.error("Failed to backup " + file + " to NTB's Cloud!")

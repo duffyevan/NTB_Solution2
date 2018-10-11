@@ -2,6 +2,7 @@ import logging
 import multiprocessing
 import os
 import sys
+from concurrent.futures.thread import ThreadPoolExecutor
 from datetime import date, timedelta
 from shutil import copyfile
 
@@ -16,10 +17,10 @@ def expected_login_format():
     print("\twebdavaddress,ntbusername,ntbpassword")
 
 
-lookback_days = 7  # The number of days to download email before today
+lookback_days = 0  # The number of days to download email before today
 
 # Set up the log file and correct formatting
-logging.basicConfig(filename="/home/wpfeldme/log_mail.txt",
+logging.basicConfig(filename="log_mail.txt",
                     level=logging.INFO,
                     format='%(asctime)s: %(levelname)s : %(message)s')
 logging.info("Starting...")
@@ -91,19 +92,23 @@ except IndexError:
     exit(-1)
 
 # for each new file copy it from the temp download folder to the final destination folder
-for file in new_files:
-    src = os.path.join(download_path, file)
-    dest = os.path.join(destination_path, file)
-    copyfile(src, dest)
+with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()/2) as executor:
+    for file in new_files:
+        src = os.path.join(download_path, file)
+        dest = os.path.join(destination_path, file)
+        print("Copying %s to %s" % (src,dest))
+        copyfile(src, dest)
 
-    try:
-        ntb_client.backup_file(dest)  # make a backup to NTB's cloud
-    except NTBCloudException as ex:
-        logging.error("Failed to backup " + file + " to NTB's Cloud!")
-        logging.error("Webdav Error Info: " + str(ex))
-        print("Failed to backup " + file + " to NTB's Cloud!")
+        try:
+            executor.submit(ntb_client.backup_file, dest)
+            # make a backup to NTB's cloud
+        except NTBCloudException as ex:
+            logging.error("Failed to backup " + file + " to NTB's Cloud!")
+            logging.error("Webdav Error Info: " + str(ex))
+            print("Failed to backup " + file + " to NTB's Cloud!")
 
 try:
+    logging.info("Checking Consistency")
     checker = ConsistencyChecker()
     checker.check_consistency(download_path)
 

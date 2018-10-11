@@ -1,5 +1,6 @@
 import logging
 import posixpath
+from concurrent.futures.thread import ThreadPoolExecutor
 
 import webdav.client as wc
 
@@ -24,14 +25,14 @@ class NTBWebdav:
     # @param hostname The hostname for NTB's cloud (EX: https://cloud.ntb.ch/)
     # @param username The username for someone who has access to the shared folder
     # @param password The password for that user
-    def __init__(self, hostname, username, password):
+    def __init__(self, hostname, username, password, max_workers=4):
         login_options = {
             'webdav_hostname': hostname,
             'webdav_login': username,
             'webdav_password': password,
             'webdav_root': '/remote.php/webdav/'
         }
-        self.backup_location = "/09_SHARED_FOLDER_EXTERN/Messdaten_Feldmessung"
+        self.backup_location = "/09_SHARED_FOLDER_EXTERN/backup_files"
         self.client = wc.Client(login_options)
         logging.info("Logged Into NTB Webdav")
 

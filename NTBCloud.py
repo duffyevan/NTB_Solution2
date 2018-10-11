@@ -44,6 +44,23 @@ class NTBWebdav:
             posixpath.join(destination_path, posixpath.basename(file_path))
         )
         try:
+            self.makeSurePathExists(destination_path)
             self.client.upload_sync(local_path=file_path, remote_path=backup_file_name)
         except wc.WebDavException as e:
             raise NTBCloudException(str(e))
+
+    def makeSurePathExists(self, path):
+        curpath = self.backup_location
+        for folder in path.split('/'):
+            curpath = posixpath.join(curpath, folder)
+            self.client.mkdir(curpath)
+
+    @staticmethod
+    def getPathFromFileName(filename):
+        parts = filename.strip('.xls').split('_')
+        number = parts[0]
+        date = parts[1]
+        year = date[:4]
+        month = date[4:6]
+        return "%s/%s/%s" % (number, year, month)
+

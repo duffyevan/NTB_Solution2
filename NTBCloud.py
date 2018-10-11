@@ -1,5 +1,5 @@
 import logging
-import os
+import posixpath
 
 import webdav.client as wc
 
@@ -37,9 +37,12 @@ class NTBWebdav:
 
     ## Backs up a single file to the correct folder on NTB's Cloud
     # @param file_path The path to the file on the disk that should be backed up
-    def backup_file(self, file_path):
+    def backup_file(self, file_path, destination_path=''):
         logging.info("Backing up " + file_path)
-        backup_file_name = os.path.join(self.backup_location, os.path.basename(file_path))
+        backup_file_name = posixpath.join(
+            self.backup_location,
+            posixpath.join(destination_path, posixpath.basename(file_path))
+        )
         try:
             self.client.upload_sync(local_path=file_path, remote_path=backup_file_name)
         except wc.WebDavException as e:

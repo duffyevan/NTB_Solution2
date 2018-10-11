@@ -96,7 +96,6 @@ with ThreadPoolExecutor(max_workers=multiprocessing.cpu_count()/2) as executor:
     for file in new_files:
         src = os.path.join(download_path, file)
         dest = os.path.join(destination_path, file)
-        print("Copying %s to %s" % (src,dest))
         copyfile(src, dest)
 
         try:
